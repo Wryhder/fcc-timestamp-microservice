@@ -5,8 +5,12 @@ var express = require('express');
 var app = express();
 
 const dayjs = require('dayjs');
+
 var utc = require("dayjs/plugin/utc");
 dayjs.extend(utc);
+
+var customParseFormat = require("dayjs/plugin/customParseFormat");
+dayjs.extend(customParseFormat);
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -27,24 +31,38 @@ app.get("/api/hello", function (req, res) {
 
 // timestamp endpoint
 app.get("/api/:date?", function (req, res) {
-  const userdate = req.params.date;
-  const possibleDateFormats = ["YYYY", "YYYY-MM-DD", "DD-MM-YYYY", "X", "x"];
+  const userdate = decodeURIComponent(req.params.date);
+  // console.log(userdate);
+  const possibleDateFormats = [
+    "YYYY-MM-DD",
+    "DD-MM-YYYY",
+    "YYYY",
+    "YYYY-MM-DD HH:mm:ss",
+    "MM/DD/YY H:mm:ss A Z",
+    "X", "x"];
   
   if (userdate) {
-    if (dayjs(userdate).isValid()) {
+    if (!isNaN(userdate)) {
+      const date = dayjs(Number(userdate));
       res.json({
-        unix: dayjs.unix(userdate/1000, possibleDateFormats, 'es').valueOf(),
-        utc: dayjs.unix(userdate/1000).toString(),
+        unix: date.valueOf(),
+        utc: date.utc().toString(),
       });
-    } 
-    else {
-      res.json({ error: "Invalid Date" });
+    } else {
+      if (dayjs(userdate, possibleDateFormats).isValid()) {
+        res.json({
+          unix: dayjs(userdate, possibleDateFormats).valueOf(),
+          utc: dayjs(userdate, possibleDateFormats).utc().toString(),
+        });
+      } else {
+        res.json({ error: "Invalid Date" });
+      }
     }
   } else {
     const now = dayjs();
     res.json({
-      unix: dayjs.unix(now/1000, possibleDateFormats, 'es').valueOf(),
-      utc: dayjs.unix(now/1000).toString(),
+      unix: now.unix(),
+      utc: now.utc().toString(),
     });
   }
 });
