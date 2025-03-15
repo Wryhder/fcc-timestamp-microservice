@@ -1,9 +1,12 @@
 // index.js
-// where your node app starts
 
 // init project
 var express = require('express');
 var app = express();
+
+const dayjs = require('dayjs');
+var utc = require("dayjs/plugin/utc");
+dayjs.extend(utc);
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -18,13 +21,32 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-
-// your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
+
+// timestamp endpoint
+app.get("/api/:date?", function (req, res) {
+  const userdate = req.params.date;
+  const possibleDateFormats = ["YYYY", "YYYY-MM-DD", "DD-MM-YYYY", "X", "x"];
+  
+  if (userdate) {
+    if (dayjs(userdate).isValid()) {
+      res.json({
+        unix: dayjs.unix(userdate/1000, possibleDateFormats, 'es').valueOf(),
+        utc: dayjs.unix(userdate/1000).toString(),
+      });
+    } 
+    else {
+      res.json({ error: "Invalid Date" });
+    }
+  } else {
+    const now = dayjs();
+    res.json({
+      unix: dayjs.unix(now/1000, possibleDateFormats, 'es').valueOf(),
+      utc: dayjs.unix(now/1000).toString(),
+    });
+  }
 });
-
-
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
