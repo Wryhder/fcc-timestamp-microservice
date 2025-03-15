@@ -31,8 +31,7 @@ app.get("/api/hello", function (req, res) {
 
 // timestamp endpoint
 app.get("/api/:date?", function (req, res) {
-  const userdate = decodeURIComponent(req.params.date);
-  // console.log(userdate);
+  let userdate = req.params.date;
   const possibleDateFormats = [
     "YYYY-MM-DD",
     "DD-MM-YYYY",
@@ -42,6 +41,7 @@ app.get("/api/:date?", function (req, res) {
     "X", "x"];
   
   if (userdate) {
+    userdate = decodeURIComponent(req.params.date)
     if (!isNaN(userdate)) {
       const date = dayjs(Number(userdate));
       res.json({
