@@ -61,7 +61,7 @@ app.get("/api/:date?", function (req, res) {
   } else {
     const now = dayjs();
     res.json({
-      unix: now.unix(),
+      unix: now.valueOf(),
       utc: now.utc().toString(),
     });
   }
