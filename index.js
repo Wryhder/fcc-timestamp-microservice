@@ -33,12 +33,17 @@ app.get("/api/hello", function (req, res) {
 app.get("/api/:date?", function (req, res) {
   let userdate = req.params.date;
   const possibleDateFormats = [
-    "YYYY-MM-DD",
-    "DD-MM-YYYY",
-    "YYYY",
-    "YYYY-MM-DD HH:mm:ss",
-    "MM/DD/YY H:mm:ss A Z",
-    "X", "x"];
+      "ddd, DD MMM YYYY HH:mm:ss [Z]",
+      "ddd, MMM D, YYYY h:mm A",
+      "MMM D, YYYY h:mm A",
+      "dddd, MMMM D YYYY, h:mm:ss A",
+      "dddd, MMMM Do YYYY, h:mm:ss A",
+      "DD-MM-YYYY",
+      "YYYY-MM-DD",
+      "YYYY",
+      "YYYY-MM-DD HH:mm:ss",
+      "MM/DD/YY H:mm:ss A Z",
+      "X", "x"];
   
   if (userdate) {
     userdate = decodeURIComponent(req.params.date)
