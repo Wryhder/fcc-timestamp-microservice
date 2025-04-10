@@ -6,7 +6,7 @@ NB: This project builds on boilerplate code provided for the [Timestamp Microser
 
 ## API Endpoint
 
-`/api/:date?:` Returns a JSON object with unix and utc keys, representing the input date in milliseconds and UTC format, respectively.
+`/api/:date?:` Returns a JSON object with `unix` and `utc` keys, representing the input date in milliseconds and UTC format, respectively.
 If no date parameter is provided, the API returns the current time in JSON format.
 
 ## Example Use Cases
